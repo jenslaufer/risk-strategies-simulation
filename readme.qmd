@@ -1,0 +1,28 @@
+---
+format: 
+  html:
+    default: true
+    embed-resources: true
+  markdown_github:
+    default: false
+editor:
+    render-on-save: true
+execute: 
+  echo: false
+  warning: false
+  fig-width: 10
+  fig-height: 5
+---
+
+
+```{r}
+library(tidyverse)
+library(glue)
+```
+
+
+# Test
+
+```{r}
+
+```
