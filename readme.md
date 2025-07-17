@@ -2,17 +2,15 @@
 
 # Risk Strategies Simulation
 
-Interactive visualizations exploring risk management strategies and
-their long-term implications, inspired by [Luca Dellanna’s
+Visualizations exploring risk management strategies and their long-term
+implications, inspired by [Luca Dellanna’s
 work](https://luca-dellanna.com/posts/long-term-risks) on risk
 management and long-term decision-making.
 
 ## Overview
 
-This project provides visual simulations that demonstrate key concepts
-from risk management research, including ergodicity, survival
-strategies, and the importance of avoiding catastrophic losses in
-long-term investment approaches.
+This project provides simulations that demonstrate the importance of
+avoiding catastrophic losses in long-term investment approaches.
 
 ## Visualizations
 
