@@ -27,7 +27,21 @@ num <- 125000
 num_years <- 25
 set.seed(44)
 
-data <- read_csv("data/simulations.csv")
+data_file <- "data/simulations.csv"
+
+if (file.exists(data_file)) {
+    data <- read_csv(data_file)
+} else {
+    data <- tibble(growth = rnorm(num, 1.15, 0.45)) |>
+        mutate(name = "Alice") |>
+        mutate(simulation = ceiling(row_number() / num_years)) |>
+        bind_rows(
+            tibble(growth = rnorm(num, 1.04, 0.12)) |>
+                mutate(name = "Bob") |>
+                mutate(simulation = ceiling(row_number() / num_years))
+        ) |>
+        write_csv(data_file)
+}
 
 
 final_capital <- data |>
@@ -37,10 +51,20 @@ final_capital <- data |>
 ```
 
 ```{r parameters}
-
-# data |>
-#     group_by(name) |>
-#     summarise(mean = mean(growth), sd = sd(growth))
+data |>
+    group_by(name) |>
+    summarise(mean = mean(growth), sd = sd(growth)) |>
+    pivot_longer(cols = c(mean, sd), names_to = "metric", values_to = "value") |>
+    ggplot(aes(x = name, y = value, fill = name)) +
+    geom_col() +
+    facet_wrap(~metric) +
+    scale_fill_tableau() +
+    theme_minimal() +
+    labs(
+        title = "Growth Parameters by Strategy",
+        subtitle = "Mean and Standard Deviation",
+        x = "", y = "Value", fill = "Strategy"
+    )
 ```
 
 ```{r wealth_distribution}
@@ -72,7 +96,7 @@ final_capital |>
         size = 4
     ) +
     scale_fill_manual(
-        labels = c("FALSE" = "Safe", "TRUE" = "Ruined"),
+        labels = c("FALSE" = "Success", "TRUE" = "Ruined"),
         values = c("FALSE" = "#2ca02c", "TRUE" = "#d62728")
     ) +
     coord_flip() +
@@ -82,5 +106,20 @@ final_capital |>
         axis.ticks.x = element_blank(),
         panel.grid = element_blank(),
     ) +
-    labs(title = "Alice vs Bob", subtitle = "Ruin Percentage", x = "", y = "", fill = "")
+    labs(title = "Alice vs Bob", subtitle = "Success Ratio", x = "", y = "", fill = "")
 ```
+
+
+#### Interested in Dev, AI, Modeling, Uncertainty, Decision Support Tools, or Sports Analytics?
+
+This demo was created by Jens Laufer from [Solytics GmbH](https://www.solytics.de) — a team passionate about empowering better decisions under uncertainty.
+
+We specialize in:
+
+- Custom analytics and simulation tools  
+- Forecasting, risk modeling, and decision intelligence  
+- Data-driven product development  
+- Sport Data Analytics
+- Fullstack Softwaredevelopment
+
+👉 [Visit solytics.de](https://www.solytics.de) — we’d love to hear from you.
