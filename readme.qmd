@@ -71,7 +71,7 @@ data |>
     pivot_longer(cols = c(mean, sd), names_to = "metric", values_to = "value") |>
     ggplot(aes(x = name, y = value, fill = name)) +
     geom_col() +
-    facet_wrap(~metric) +
+    facet_wrap(~metric, scales = "free_y") +
     scale_fill_tableau() +
     theme_minimal() +
     labs(
