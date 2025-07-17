@@ -1,9 +1,9 @@
 ---
 format: 
-  html:
-    embed-resources: true
+  gfm:
+    embed-resources: false
 editor:
-    render-on-save: false
+    render-on-save: true
 execute: 
   echo: false
   warning: false
@@ -20,7 +20,7 @@ library(scales)
 ```
 
 
-# Test
+# Comparison Risky and Secure Investment Strategy
 
 ```{r}
 num <- 125000
@@ -29,9 +29,6 @@ set.seed(44)
 
 data <- read_csv("data/simulations.csv")
 
-data |>
-    group_by(name) |>
-    summarise(mean = mean(growth), sd = sd(growth))
 
 final_capital <- data |>
     group_by(name, simulation) |>
@@ -39,8 +36,14 @@ final_capital <- data |>
     ungroup()
 ```
 
-```{r}
+```{r parameters}
 
+# data |>
+#     group_by(name) |>
+#     summarise(mean = mean(growth), sd = sd(growth))
+```
+
+```{r wealth_distribution}
 final_capital |>
     ggplot(aes(total_growth, fill = name)) +
     geom_histogram(bins = 100) +
@@ -51,11 +54,33 @@ final_capital |>
     facet_wrap(~name) +
     theme_minimal() +
     labs(title = "Alice vs Bob", subtitle = "Wealth Distribution", x = "Total Growth after {num_years} years" |> glue(), y = "Number")
+```
 
+
+```{r ruin_ratio}
 final_capital |>
     mutate(ruined = ifelse(total_growth < 1, T, F)) |>
     group_by(name, ruined) |>
     summarise(n = n()) |>
-    mutate(ratio = n / sum(n))
-
+    mutate(ratio = n / sum(n)) |>
+    ggplot(aes(x = name, y = ratio, fill = ruined)) +
+    geom_bar(stat = "identity") +
+    geom_text(
+        aes(label = scales::percent(ratio, accuracy = 0.1), group = ruined),
+        position = position_stack(vjust = 0.5),
+        color = "white",
+        size = 4
+    ) +
+    scale_fill_manual(
+        labels = c("FALSE" = "Safe", "TRUE" = "Ruined"),
+        values = c("FALSE" = "#2ca02c", "TRUE" = "#d62728")
+    ) +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        panel.grid = element_blank(),
+    ) +
+    labs(title = "Alice vs Bob", subtitle = "Ruin Percentage", x = "", y = "", fill = "")
 ```
